@@ -61,11 +61,12 @@ def main():
   # print(tickets)
   # print(ticket_id)
   
-  showTickets(tickets)
+  #showTickets(tickets)
   # changePriority(tickets)
   #remember to increment the ticket_id
-
-
+  # removeTicket(tickets)
+  # print(tickets)
+  todayEvents(tickets)
 ############################
 #this function will recieve the user type and based on it, it will print the menu
 def displayMenu(user_type):
@@ -160,11 +161,69 @@ def showTickets(tickets):
         
 ###################################
 def changePriority(tickets):
-  id=input("please ente the ticket id: ")
+  id=input("please enter the ticket id: ")
   new_priority=input("Enter the new priority: ")
-  list=[]
+  found=False
+  for key,value in tickets.items():
+    for i in range(len(value)):
+      if value[i][0]==id:
+       value[i][4]=new_priority
+       found=True
+       break
+  if not found:
+    print("Ticket is not available!")
+  else:
+    print("Done!")   
+
+
+###################################
+def removeTicket(tickets):
+  id=input("Enter the id of the ticket you want to remove: ")
+  l=[]
+  k=""
+  found=False
+  #looping in the dict to look for the ticket id , if its available, the list that this ticket belongs to will be cleared,after that another loop will remove the [] from the dict by adding lists that are not empty
+  for key,value in tickets.items():
+    for i in range(len(value)):
+      if value[i][0]==id:
+        value[i].clear()
+        k=key
+        found=True
+  if found:
+    for i in tickets[k]:
+      if len(i)!=0:   
+        l.append(i)
+    tickets[k]=l
+    print("Done!") 
+  else:
+    print("Ticket is not available!")
+    
+##############################
   
-
-
-
+def todayEvents(tickets):
+  l=[]
+  datee=int("20"+date.today().strftime("%y%m%d"))
+  #added all values with today's date to a list
+  for key,value in tickets.items():
+    for i in value:
+      if int(i[3])==datee:
+        l.append(i)
+  print(l)
+  
+  #bubble sort the list by the date
+  for x in range(len(l)):
+    check_swap = False
+    for y in range(len(l) - x - 1):
+      
+      if l[y][4] > l[y + 1][4]:
+        check_swap = True
+        temp = l[y]
+        l[y] = l[y + 1]
+        l[y + 1] = temp
+        
+    if not check_swap:  
+      return l
+  print(l)
+  
+  
 main()

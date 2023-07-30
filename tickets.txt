@@ -1,10 +1,10 @@
 tick101, ev008, fred, 10230734, 0
-tick102, ev008, fred, 20230734, 0
+tick102, ev008, fred, 20230730, 10
 tick103, ev008, fred, 30230731, 0
 tick104, ev003, fred, 40240730, 0
 tick105, ev003, fred, 50240730, 0
-tick106, ev001, fred, 70230730, 0
+tick106, ev001, fred, 20230730, 110
 tick107, ev007, fred, 60230730, 0
 tick108, ev007, fred, 80230730, 0
-tick109, ev007, fred, 90230730, 0
+tick109, ev007, fred, 20230730, 1110
 tick109, ev007, fred, 90230730, 0
