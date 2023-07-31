@@ -10,18 +10,7 @@ def main():
   global username
   ticket_id=0
   highest_event_id=0
-  # with open("tickets.txt") as t:
-  #   for line in t:
-  #     l=line.split(',')[1].strip()
-  #     tickets[l]=[]
-  #     if int(line.split(',')[0][4:])>ticket_id:
-  #       ticket_id=int(line.split(',')[0][4:])
-  #     if int(line.split(',')[1].strip()[2:])>highest_event_id:
-  #       highest_event_id=int(line.split(',')[1].strip()[2:])
-  # with open("tickets.txt") as t:
-  #   for line in t:
-  #     l=line.split(',')[1].strip()
-  #     tickets[l].append(line.strip())
+
   l=list()
   with open("tickets.txt") as t:
      for line in t:
@@ -34,8 +23,6 @@ def main():
         highest_event_id=int(i[1].strip()[2:])
   for i in l:
     tickets[i[1].strip()].append(i)
-  # print(tickets)
-  
   
   username=input("Enter your Username: ")
   password=input("Enter your Password: ")
@@ -52,6 +39,7 @@ def main():
       username=input("Enter your Username: ")
       password=input("Enter your Password: ")
       attempts-=1
+      print(f"{attempts} remaining attempts ")
     if username=="admin" and password=="admin123123":
       user="admin"
     else:
@@ -68,8 +56,9 @@ def displayMenu(user_type,tickets):
     option=int(input("1. Display Statistics\n2. Book a Ticket\n3. Display all Tickets\n4. Change Ticket’s Priority\n5. Disable Ticket\n6. Run Events\n7. Exit\n"))
     if option==1:
       displayStatistics(tickets)
+      displayMenu(user_type,tickets)
     elif option==2:
-      bookTicket(tickets)     
+      bookTicket(tickets,user_type)
       displayMenu(user_type,tickets)
     elif option==3:
       showTickets(tickets)
@@ -87,8 +76,14 @@ def displayMenu(user_type,tickets):
     elif option==7:
       exit()
   else:
-    print("1. Book a ticket\n2. Exit")
-    
+    option=int(input("1. Book a ticket\n2. Exit\n"))
+    if option==1:
+      print("olaa")
+      bookTicket(tickets,user_type)
+      displayMenu(user_type,tickets)
+    elif option==2:
+      save(tickets)
+      exit() 
     
     
 ##############################   
@@ -105,24 +100,42 @@ def displayStatistics(tickets):
 
 
 ###############################
-def bookTicket(tickets):
+def bookTicket(tickets,user):
   global ticket_id
-  new_ticket=input("please add: username, event id, date(YYYYMMDD), priority: ")
+  global highest_event_id
+  a=[]
   
-  event=new_ticket.split(',')[1].strip()
-  user=new_ticket.split(',')[0].strip()
-  priority=new_ticket.split(',')[3].strip()
-  # datee="20"+date.today().strftime("%y%m%d")
-  datee=new_ticket.split(',')[2].strip()
+  
+  if user=="admin":
+    new_ticket=input("please add by using this same format: username, event id, date(YYYYMMDD), priority: ")
+    event=new_ticket.split(',')[1].strip()
+    user=new_ticket.split(',')[0].strip()
+    priority=new_ticket.split(',')[3].strip()
+    datee=new_ticket.split(',')[2].strip()
+    a=[f"tick{ticket_id+1}",f" {event}",f" {user}",f" {datee}",f" {priority}"]
+  else:
+    new_ticket=input("please add by using this same format: event id, date(YYYYMMDD): ")
+    event=new_ticket.split(',')[0].strip()
+    user=username
+    priority=0
+    datee=new_ticket.split(',')[1].strip()
+    a=[f"tick{ticket_id+1}",f" {event}",f" {user}",f" {datee}",f" {priority}"]
+    
+    
   #cheking if the event already exist in the dictionary else we will add a new event 
- 
-  a=[f"tick{ticket_id+1}",event,user,datee,priority]
   print(a)
   if event in tickets:
     tickets[event].append(a)
   else:
     tickets[event]=[a]
-  
+    
+    
+  #if the event number entered is higher than the highest_event_id it's value will be changed to event 
+  if highest_event_id<int(event.strip()[2:]):
+    highest_event_id=int(event.strip()[2:])
+    
+    
+  #automatically incrementing ticket_id after adding one
   ticket_id+=1
   return True
  
@@ -175,7 +188,7 @@ def showTickets(tickets):
         
 ###################################
 def changePriority(tickets):
-  id=input("please enter the ticket id: ")
+  id=input("please enter the ticket id ex: tick102 : ")
   new_priority=input("Enter the new priority: ")
   found=False
   for key,value in tickets.items():
@@ -248,7 +261,17 @@ def todayEvents(tickets):
   else :
     print("no tickets for today")
   
-  
+####################################
+def save(tickets):
+  s=""
+  for key,value in tickets.items():
+    for i in value:
+      #https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
+      s+= ','.join([str(elem) for elem in i])
+      s+='\n'
+  #https://www.pythontutorial.net/python-basics/python-write-text-file/
+  with open('tickets.txt', 'w') as f:
+      f.write(s)
   
   
 main()
