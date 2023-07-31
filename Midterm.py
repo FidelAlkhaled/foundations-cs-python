@@ -74,6 +74,7 @@ def displayMenu(user_type,tickets):
       todayEvents(tickets)
       displayMenu(username,tickets) 
     elif option==7:
+      save(tickets)
       exit()
   else:
     option=int(input("1. Book a ticket\n2. Exit\n"))
