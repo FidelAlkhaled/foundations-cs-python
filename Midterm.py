@@ -67,7 +67,7 @@ def displayMenu(user_type,tickets):
       changePriority(tickets)
       displayMenu(username,tickets) 
     elif option==5:
-      id=input("Enter the id of the ticket you want to remove: ")
+      id=input("Enter the id of the ticket you want to remove in this format ex:(tick101) : ")
       removeTicket(tickets,id)
       displayMenu(username,tickets) 
     elif option==6:
@@ -79,7 +79,6 @@ def displayMenu(user_type,tickets):
   else:
     option=int(input("1. Book a ticket\n2. Exit\n"))
     if option==1:
-      print("olaa")
       bookTicket(tickets,user_type)
       displayMenu(user_type,tickets)
     elif option==2:
