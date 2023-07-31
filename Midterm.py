@@ -7,6 +7,7 @@ def main():
   tickets={}
   global ticket_id
   global highest_event_id
+  global username
   ticket_id=0
   highest_event_id=0
   # with open("tickets.txt") as t:
@@ -55,26 +56,36 @@ def main():
       user="admin"
     else:
       exit()
-  # displayMenu(user)
-  # displayStatistics(tickets)
-  # bookTicket(tickets)
-  # print(tickets)
-  # print(ticket_id)
+  displayMenu(user,tickets)
   
-  #showTickets(tickets)
-  # changePriority(tickets)
-  #remember to increment the ticket_id
-  # removeTicket(tickets)
-  # print(tickets)
-  todayEvents(tickets)
 ############################
 #this function will recieve the user type and based on it, it will print the menu
-def displayMenu(user_type):
+def displayMenu(user_type,tickets):
   print("\nChoose an option:")
   print("###################")
 
   if user_type=="admin":
-    print("1. Display Statistics\n2. Book a Ticket\n3. Display all Tickets\n4. Change Ticket’s Priority\n5. Disable Ticket\n6. Run Events\n7. Exit")
+    option=int(input("1. Display Statistics\n2. Book a Ticket\n3. Display all Tickets\n4. Change Ticket’s Priority\n5. Disable Ticket\n6. Run Events\n7. Exit\n"))
+    if option==1:
+      displayStatistics(tickets)
+    elif option==2:
+      bookTicket(tickets)     
+      displayMenu(user_type,tickets)
+    elif option==3:
+      showTickets(tickets)
+      displayMenu(username,tickets) 
+    elif option==4:
+      changePriority(tickets)
+      displayMenu(username,tickets) 
+    elif option==5:
+      id=input("Enter the id of the ticket you want to remove: ")
+      removeTicket(tickets,id)
+      displayMenu(username,tickets) 
+    elif option==6:
+      todayEvents(tickets)
+      displayMenu(username,tickets) 
+    elif option==7:
+      exit()
   else:
     print("1. Book a ticket\n2. Exit")
     
@@ -90,27 +101,30 @@ def displayStatistics(tickets):
       l=len(value)
       k=key
   print(f"event {k} has the highest number of tickets which is {l}")
-
+  
 
 
 ###############################
 def bookTicket(tickets):
-  
+  global ticket_id
   new_ticket=input("please add: username, event id, date(YYYYMMDD), priority: ")
   
   event=new_ticket.split(',')[1].strip()
-  username=new_ticket.split(',')[0].strip()
+  user=new_ticket.split(',')[0].strip()
   priority=new_ticket.split(',')[3].strip()
   # datee="20"+date.today().strftime("%y%m%d")
   datee=new_ticket.split(',')[2].strip()
   #cheking if the event already exist in the dictionary else we will add a new event 
  
-  a=[f"tick{ticket_id+1}",event,username,datee,priority]
+  a=[f"tick{ticket_id+1}",event,user,datee,priority]
+  print(a)
   if event in tickets:
     tickets[event].append(a)
   else:
     tickets[event]=[a]
- 
+  
+  ticket_id+=1
+  return True
  
  #############################
  
@@ -169,16 +183,17 @@ def changePriority(tickets):
       if value[i][0]==id:
        value[i][4]=new_priority
        found=True
+       print(value[i])
        break
   if not found:
     print("Ticket is not available!")
   else:
     print("Done!")   
-
+  
 
 ###################################
-def removeTicket(tickets):
-  id=input("Enter the id of the ticket you want to remove: ")
+def removeTicket(tickets,id):
+  
   l=[]
   k=""
   found=False
@@ -189,6 +204,7 @@ def removeTicket(tickets):
         value[i].clear()
         k=key
         found=True
+        break
   if found:
     for i in tickets[k]:
       if len(i)!=0:   
@@ -197,7 +213,7 @@ def removeTicket(tickets):
     print("Done!") 
   else:
     print("Ticket is not available!")
-    
+   
 ##############################
   
 def todayEvents(tickets):
@@ -208,7 +224,7 @@ def todayEvents(tickets):
     for i in value:
       if int(i[3])==datee:
         l.append(i)
-  print(l)
+  
   
   #bubble sort the list by the date
   for x in range(len(l)):
@@ -222,8 +238,17 @@ def todayEvents(tickets):
         l[y + 1] = temp
         
     if not check_swap:  
-      return l
-  print(l)
+      break
+  for i in l:
+    print(i)
+  #using the removeTicket function to delete today's tickets after showing them
+  if len(l)>0:
+    for i in l:
+      removeTicket(tickets,i[0])
+  else :
+    print("no tickets for today")
+  
+  
   
   
 main()
